@@ -3,7 +3,13 @@
     (replacing the placeholder with your Github name):
     https://api.github.com/users/<your name>
 */
-
+import axios from 'axios'
+const myCardInfo = axios.get('https://api.github.com/users/PVigar88')
+  .then(res => res.data)
+  .catch(err => console.log('ERRRRR'))
+  .finally(() => console.log('all done'));
+console.log(myCardInfo)
+//console.log(result);
 /*
   STEP 2: Inspect and study the data coming back, this is YOUR
     github info! You will need to understand the structure of this
@@ -28,7 +34,7 @@
     user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+const followersArray = ['aburn7577', 'FinalBoss', 'ericbenedetto16', 'MylesGearon', 'MichaelStadtmiller'];
 
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
@@ -58,3 +64,65 @@ const followersArray = [];
     luishrd
     bigknell
 */
+function gitHubCardMaker(gitHubObject) {
+  const card = document.createElement('div');
+  card.classList.add('card');
+  const userImage = document.createElement('img');
+  userImage.src = gitHubObject.avatar_url;
+  const cardInfo = document.createElement('div');
+  cardInfo.classList.add('card-info');
+  const nameHeader = document.createElement('h3');
+  nameHeader.classList.add('name');
+  nameHeader.textContent = gitHubObject.name;
+  const userName = document.createElement('p');
+  userName.classList.add('username');
+  userName.textContent = gitHubObject.login;
+  const locationInfo = document.createElement('p');
+  locationInfo.textContent = `Location: ${gitHubObject.location}`;
+  const profileInfo = document.createElement('p');
+  profileInfo.textContent = "Profile:";
+  const pageLink = document.createElement('a');
+  pageLink.href = gitHubObject.html_url;
+  pageLink.textContent = gitHubObject.html_url;
+  const followersCount = document.createElement('p');
+  followersCount.textContent = `Followers: ${gitHubObject.followers}`
+  const followingCount = document.createElement('p');
+  followingCount.textContent = `Following: ${gitHubObject.following}`
+  const bioBlurb = document.createElement('p');
+  bioBlurb.textContent = gitHubObject.bio;
+
+  card.appendChild(userImage);
+  card.appendChild(cardInfo);
+  cardInfo.appendChild(nameHeader);
+  cardInfo.appendChild(userName);
+  cardInfo.appendChild(locationInfo);
+  cardInfo.appendChild(profileInfo);
+  profileInfo.appendChild(pageLink);
+  cardInfo.appendChild(followersCount);
+  cardInfo.appendChild(followingCount);
+  cardInfo.appendChild(bioBlurb);
+
+  return card;
+}
+
+
+axios.get('https://api.github.com/users/PVigar88')
+  .then(res => {
+    let myCard = gitHubCardMaker(res.data);
+    document.querySelector('.cards').appendChild(myCard);
+  })
+  .catch(err => console.log('ERRRRR'))
+  .finally(() => console.log('all done'));
+//const myCard = gitHubCardMaker(myCardInfo);
+//document.querySelector('.cards').appendChild(myCard);
+
+followersArray.forEach(person => {
+  const userURL = `https://api.github.com/users/${person}`;
+  axios.get(userURL)
+  .then(res => {
+    let newCard = gitHubCardMaker(res.data);
+    document.querySelector('.cards').appendChild(newCard);
+  })
+  .catch(err => console.log('ERRRRR'))
+  .finally(() => console.log('all done'));
+})
